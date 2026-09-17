@@ -9,6 +9,12 @@ A Claude Code skill and toolkit for making product videos from a real web app.
 
 Output is 2560x1440, 30 fps H.264 by default.
 
+| Walkthrough (26 s) | Motion promo (20 s) |
+|---|---|
+| ![Walkthrough example](docs/media/walkthrough.gif) | ![Motion promo example](docs/media/motion.gif) |
+
+Previews are reduced GIFs. Full-quality MP4s are on the [v0.1.0 release](https://github.com/soloandco/web-demo-video/releases/tag/v0.1.0). Both were made from the example app in this repository.
+
 The skill also carries the working rules that matter more than the code: pick the style by purpose, agree on a storyboard before rendering, show a new screen whole before zooming in, vary the movement between scenes, write captions from real user questions, check frame sheets before handing over, and never put real customer data on screen.
 
 ## Install
