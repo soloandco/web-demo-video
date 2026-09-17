@@ -1,0 +1,22 @@
+{
+  "name": "web-demo-video",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Claude Code skill and toolkit for making product walkthrough and promo videos from a real web app.",
+  "license": "MIT",
+  "scripts": {
+    "example:record": "node examples/sample-tasks/record.mjs",
+    "example:capture": "node examples/sample-tasks/capture.mjs",
+    "example:render": "remotion render examples/sample-tasks/motion/index.ts Main out/sample-tasks-motion.mp4 --public-dir examples/sample-tasks/motion/public --codec=h264 --crf=17 --muted",
+    "example:studio": "remotion studio examples/sample-tasks/motion/index.ts --public-dir examples/sample-tasks/motion/public",
+    "brand-guard": "node scripts/brand-guard.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.462",
+    "puppeteer-core": "^24.43.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "remotion": "4.0.462"
+  }
+}

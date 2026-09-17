@@ -1,0 +1,14 @@
+{
+  "name": "web-demo-video",
+  "description": "Product video skill for Claude Code",
+  "owner": { "name": "soloandco" },
+  "plugins": [
+    {
+      "name": "web-demo-video",
+      "description": "Make product walkthrough and motion-graphics promo videos (MP4) from a real web app",
+      "version": "0.1.0",
+      "source": "./",
+      "author": { "name": "soloandco" }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "web-demo-video",
+  "description": "Make product walkthrough and motion-graphics promo videos (MP4) from a real web app",
+  "version": "0.1.0",
+  "author": { "name": "soloandco" },
+  "homepage": "https://github.com/soloandco/web-demo-video",
+  "repository": "https://github.com/soloandco/web-demo-video",
+  "license": "MIT",
+  "keywords": ["video", "demo", "walkthrough", "remotion", "puppeteer", "screen-recording", "product-marketing"]
+}

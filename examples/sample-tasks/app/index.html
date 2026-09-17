@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sample Tasks</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --accent: #2563EB; --ink: #111827; --muted: #6B7280; --line: #E5E7EB; --bg: #F3F4F6; --ok: #16A34A; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, "Segoe UI", system-ui, sans-serif; color: var(--ink); background: var(--bg); height: 100vh; display: grid; grid-template-columns: 220px 1fr; }
+  aside { background: #fff; border-right: 1px solid var(--line); padding: 22px 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; margin-bottom: 28px; }
+  .brand i { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); display: inline-block; }
+  nav a { display: block; padding: 9px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+  nav a.on { background: #EFF6FF; color: var(--accent); font-weight: 700; }
+  main { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+  header { display: flex; align-items: center; gap: 14px; padding: 16px 28px; background: #fff; border-bottom: 1px solid var(--line); }
+  #search { flex: 1; max-width: 420px; height: 38px; border: 1px solid var(--line); border-radius: 10px; padding: 0 14px; font: inherit; font-size: 14px; outline: none; }
+  #search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #2563EB22; }
+  .spacer { flex: 1; }
+  .btn { height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .content { display: grid; grid-template-columns: 1fr 360px; gap: 20px; padding: 24px 28px; min-height: 0; }
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+  .summary { display: flex; align-items: center; gap: 18px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+  .summary h1 { font-size: 20px; margin: 0; }
+  .stat { color: var(--muted); font-size: 14px; }
+  .stat b { color: var(--ink); }
+  .bar { width: 160px; height: 8px; border-radius: 99px; background: #E5E7EB; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--accent); transition: width .4s; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding: 10px 20px; border-bottom: 1px solid var(--line); }
+  td { padding: 11px 20px; border-bottom: 1px solid #F3F4F6; }
+  tr[data-task] { cursor: pointer; }
+  tr[data-task]:hover, tr.sel { background: #F9FAFB; }
+  tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+  .pill.todo { background: #FEF3C7; color: #92400E; }
+  .pill.done { background: #DCFCE7; color: #166534; }
+  #detail { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+  #detail .empty { color: var(--muted); font-size: 14px; margin: auto; text-align: center; }
+  #detail h2 { font-size: 19px; margin: 0; }
+  .kv { display: grid; grid-template-columns: 90px 1fr; gap: 8px 12px; font-size: 14px; }
+  .kv span:nth-child(odd) { color: var(--muted); }
+  #detail p { font-size: 14px; line-height: 1.6; color: #374151; margin: 0; }
+  #toast { position: fixed; right: 28px; bottom: 28px; background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: all .3s; }
+  #toast.show { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<aside>
+  <div class="brand"><i></i>Sample Tasks</div>
+  <nav><a class="on" href="#">Tasks</a><a href="#">Projects</a><a href="#">Reports</a><a href="#">Settings</a></nav>
+</aside>
+<main>
+  <header>
+    <input id="search" placeholder="Search tasks" autocomplete="off">
+    <div class="spacer"></div>
+    <button class="btn" id="export">Export CSV</button>
+    <button class="btn primary">New task</button>
+  </header>
+  <div class="content">
+    <section class="panel" style="overflow:auto">
+      <div class="summary">
+        <h1>This week</h1>
+        <div class="stat" id="stat"><b id="done-count">7</b> of <b id="total-count">12</b> done</div>
+        <div class="bar"><span id="bar"></span></div>
+      </div>
+      <table><thead><tr><th>Task</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table>
+    </section>
+    <section class="panel" id="detail"><div class="empty">Select a task to see details</div></section>
+  </div>
+</main>
+<div id="toast"></div>
+<script>
+  // All data is made up for the demo.
+  const tasks = [
+    ['Send invoice reminders', 'Alex', 'Mon', 'todo', 'Remind customers with invoices older than 30 days. Use the standard reminder template.'],
+    ['Update onboarding checklist', 'Sam', 'Mon', 'done', ''],
+    ['Review Q3 invoice exports', 'Jordan', 'Tue', 'done', ''],
+    ['Book team offsite venue', 'Riley', 'Tue', 'done', ''],
+    ['Fix broken signup link', 'Alex', 'Wed', 'done', ''],
+    ['Draft release notes', 'Sam', 'Wed', 'todo', ''],
+    ['Clean up old projects', 'Jordan', 'Thu', 'done', ''],
+    ['Reply to partner email', 'Riley', 'Thu', 'done', ''],
+    ['Prepare weekly report', 'Alex', 'Fri', 'todo', ''],
+    ['Archive paid invoices', 'Sam', 'Fri', 'todo', ''],
+    ['Rotate API keys', 'Jordan', 'Fri', 'done', ''],
+    ['Plan next sprint', 'Riley', 'Fri', 'todo', ''],
+  ].map(([title, owner, due, status, note], i) => ({ id: i + 1, title, owner, due, status, note: note || 'No notes yet.' }))
+
+  let query = '', selected = null
+  const $ = (id) => document.getElementById(id)
+
+  function render() {
+    const done = tasks.filter((t) => t.status === 'done').length
+    $('done-count').textContent = done
+    $('total-count').textContent = tasks.length
+    $('bar').style.width = (done / tasks.length) * 100 + '%'
+    $('rows').innerHTML = tasks
+      .filter((t) => t.title.toLowerCase().includes(query.toLowerCase()))
+      .map((t) => `<tr data-task="${t.id}" class="${t.id === selected ? 'sel' : ''}"><td>${t.title}</td><td>${t.owner}</td><td>${t.due}</td><td><span class="pill ${t.status}">${t.status === 'done' ? 'Done' : 'To do'}</span></td></tr>`)
+      .join('')
+    const t = tasks.find((x) => x.id === selected)
+    $('detail').innerHTML = t
+      ? `<h2>${t.title}</h2><div class="kv"><span>Owner</span><span>${t.owner}</span><span>Due</span><span>${t.due}</span><span>Status</span><span><span class="pill ${t.status}">${t.status === 'done' ? 'Done' : 'To do'}</span></span></div><p>${t.note}</p>
+         <button class="btn primary" id="mark-done" ${t.status === 'done' ? 'disabled style="opacity:.5"' : ''}>${t.status === 'done' ? 'Completed' : 'Mark as done'}</button>`
+      : '<div class="empty">Select a task to see details</div>'
+  }
+
+  $('search').addEventListener('input', (e) => { query = e.target.value; render() })
+  $('rows').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-task]'); if (tr) { selected = Number(tr.dataset.task); render() } })
+  $('detail').addEventListener('click', (e) => {
+    if (e.target.id !== 'mark-done') return
+    tasks.find((x) => x.id === selected).status = 'done'
+    render()
+  })
+  $('export').addEventListener('click', () => {
+    $('toast').textContent = `Exported ${tasks.length} tasks`
+    $('toast').classList.add('show')
+    setTimeout(() => $('toast').classList.remove('show'), 2200)
+  })
+  render()
+</script>
+</body>
+</html>

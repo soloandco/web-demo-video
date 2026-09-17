@@ -1,0 +1,16 @@
+{
+  "name": "product-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio motion/index.ts --public-dir motion/public",
+    "render": "remotion render motion/index.ts Main out/motion.mp4 --public-dir motion/public --codec=h264 --crf=17 --muted"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.462",
+    "puppeteer-core": "^24.43.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "remotion": "4.0.462"
+  }
+}
